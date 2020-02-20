@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+<style type="text/css">
+	h1 {
+		font-family: 'Archivo', sans-serif;
+		font-weight: 500;
+		color:#b0a6c9;
+	}
+	.button {
+		background: rgba(209, 193, 205, 0.2); 
+		width:50px; 
+		height:50px; 
+		border:none; 
+		color:white; 
+		font-size:15pt;
+		font-family:'Open Sans', sans-serif;
+		font-weight: 300;
+	}
+	
+	.button:hover {
+		background: rgba(209, 193, 205, 0.5);
+	}
+	
+	.button:active {
+		position:relative;
+		top:3px;
+	}
+	
+	table {
+		border:0px; 
+		margin-left:20px;
+		position:relative;
+		top:20px;
+	}
+	
+	td {
+		border:0px;
+	}
+	
+	#display {
+		border:0px;
+		border-bottom: solid 1px;
+		border-bottom-color: rgba(255, 255, 255, 0.2);
+		width:205px; 
+		height:100px; 
+		color:white; 
+		font-size:60pt;
+		font-family:'Open Sans', sans-serif;
+		font-weight: 500;		
+		text-align:right; 
+		margin-left:20px; 
+		background: rgba(204, 204, 204, 0.0); 
+		position:relative; 
+		top:20px;
+	}
+	
+	#container {
+		background: rgb(37,111,162); 
+		background: linear-gradient(180deg, rgba(37,111,162,1) 0%, rgba(75,200,255,1) 43%, rgba(212,206,255,1) 100%); 
+		height:370px; 
+		width:250px;
+	}
+	
+	#xhtml_logo {
+		position:relative;
+		top:30px;
+	}
+</style>
+<title>JavaScript HW3</title>
+</head>
+<body> 
+	<h1>Simple calculator</h1>
+
+<!--This is the text box where numbers will be displayed.  Call the display function to show a number here -->
+	<div id="container">
+		<form action="" method="get">
+		<p>
+			<input type="text" id="display" value="0"/>
+		</p>
+		</form>
+
+		<form action="" method="get">
+		<!--Your calculator buttons go here. Note there is no submit buttons at all -->
+			<table border="1">
+			<tr>
+				<td><input type="button" class="button" name="btn" value="7" onclick="BtnPressed(value)"></td>
+				<td><input type="button" class="button" name="btn" value="8" onclick="BtnPressed(value)"></td>
+				<td><input type="button" class="button" name="btn" value="9" onclick="BtnPressed(value)"></td>
+				<td><input type="button" class="button"  name="btn" id="operand" value="/"onclick="Operation(value)"></td>
+			</tr>
+			<tr>
+				<td><input type="button" class="button" name="btn" value="4" onclick="BtnPressed(value)"></td>
+				<td><input type="button" class="button" name="btn" value="5" onclick="BtnPressed(value)"></td>
+				<td><input type="button" class="button"  name="btn" value="6" onclick="BtnPressed(value)"></td>
+				<td><input type="button" class="button" name="btn" id="operand" value="*" onclick="Operation(value)"></td>
+			</tr>
+			<tr>
+				<td><input type="button" class="button"  name="btn" value="1" onclick="BtnPressed(value)"></td>
+				<td><input type="button" class="button"  name="btn" value="2" onclick="BtnPressed(value)"></td>
+				<td><input type="button" class="button"  name="btn" value="3" onclick="BtnPressed(value)"></td>
+				<td><input type="button" class="button" name="btn" id="operand" value="-" onclick="Operation(value)"></td>
+			</tr>
+			<tr>
+				<td><input type="button" class="button"  name="btn" value="." onclick="BtnPressed(value)"></td>
+				<td><input type="button" class="button"  name="btn" value="0" onclick="BtnPressed(value)"></td>
+				<td><input type="button" class="button"  name="btn" value="=" onclick="Compute(first_num,second_num,third_num,PendingOp,SecPendingOp)"></td>
+				<td><input type="button" class="button" name="btn" id="operand" value="+" onclick="Operation(value)"></td>
+			</tr>
+			</table>
+		</form>
+	</div>
+
+	<script type="text/javascript">
+	//This is the function I am providing for you.  It takes as argument a string or a number and displays it in the box in the window
+	//There is no need to edit this function in any way.
+		function display(num) 
+		{
+			var node = document.getElementById("display");  
+			node.value=num; 
+		}
+		
+
+	// `Add whatever JS you want here
+		var Accum = 0;
+
+		var FirstNumFlag = false;
+		var SecondNumFlag = false;
+		var ThirdNumFlag = false;
+		var FirstOpFlag = false;
+		var SecondOpFlag = false;
+		
+		var first_num;
+		var second_num = "";
+		var third_num = "";
+		var first_plus_sec = "";
+		var NumArr = [];
+		
+		var PendingOp="";
+		var SecPendingOp="";
+
+	// You will want to write a function that captures the users button pushes
+	// After each button push your function should call the display function to show the number entered so far.
+		function BtnPressed(num) 
+		{ 
+			tnode = document.getElementById("display");
+			if (tnode.value == "0") {		//if first digit
+				display(num);	
+				NumArr[0] = num;
+				first_num = NumArr[0] + "";
+			}
+			else if (tnode.value != "0") { 
+				if(FirstNumFlag==false){ 
+
+					first_num += num; //string first_num adds more string num
+				}	
+				display(first_num); //updated first_num
+				//alert(first_num);
+			}
+			
+			if(FirstNumFlag==true && FirstOpFlag==true && SecondOpFlag==false){
+				second_num += num;
+				display(second_num);
+				//alert(second_num+"= second"); //check if second num is correct
+			}
+			
+			if(SecondOpFlag==true){ //if second operation is already pressed
+				third_num += num;
+				display(third_num);
+				//alert(third_num+"= third"); //check if third num is correct
+			}	
+			
+		}
+		
+		//This function receives the operation sign and changes the operation flag values. This function also displays the total after the first operation has been performed.
+		function Operation(op)  
+		{
+			if((op=="+"||"-"||"*"||"/") && FirstOpFlag==false){
+				//alert("got op");
+				PendingOp = op;
+				//alert(PendingOp);
+				
+				FirstOpFlag = true;
+				FirstNumFlag = true;
+				
+				//alert("first op flag!"+" "+PendingOp);
+			}
+			else if(SecPendingOp!="+"||"-"||"*"||"/"){ 
+				SecPendingOp = op;
+				
+				SecondOpFlag = true;
+				SecondNumFlag = true;
+				//alert("second op flag!"+" "+SecPendingOp);
+				
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				if(PendingOp == "+"){
+					first_plus_sec = f_first_num + f_second_num;
+					//alert(first_plus_sec);
+					display(first_plus_sec);
+				}
+				else if(PendingOp == "-"){
+					first_plus_sec = f_first_num - f_second_num;
+					//alert(first_plus_sec);
+					display(first_plus_sec);
+				}
+				else if(PendingOp == "*"){
+					first_plus_sec = f_first_num * f_second_num;
+					//alert(first_plus_sec);
+					display(first_plus_sec);
+				}
+				else if(PendingOp == "/"){
+					first_plus_sec = f_first_num / f_second_num;
+					//alert(first_plus_sec);
+					display(first_plus_sec);
+				}
+			}
+		}
+		
+		// You should also write a function that computes the final result and calls the display function	 
+		function Compute(first_num,second_num,third_num,PendingOp,SecPendingOp)
+		{
+			//alert(first_num+PendingOp+second_num);
+			if(PendingOp=="+" && SecPendingOp==""){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				Accum = f_first_num + f_second_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="-" && SecPendingOp==""){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				Accum = f_first_num - f_second_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="*" && SecPendingOp==""){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				Accum = f_first_num * f_second_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="/" && SecPendingOp==""){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				Accum = f_first_num / f_second_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="+" && SecPendingOp=="+"){ //plus as first op
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = f_first_num + f_second_num + f_third_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="+" && SecPendingOp=="-"){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = f_first_num + f_second_num - f_third_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="+" && SecPendingOp=="*"){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = (f_first_num + f_second_num) * f_third_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="+" && SecPendingOp=="/"){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = (f_first_num + f_second_num) / f_third_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="-" && SecPendingOp=="+"){ //minus as first op
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = f_first_num - f_second_num + f_third_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="-" && SecPendingOp=="-"){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = f_first_num - f_second_num - f_third_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="-" && SecPendingOp=="*"){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = (f_first_num - f_second_num) * f_third_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="-" && SecPendingOp=="/"){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = (f_first_num - f_second_num) / f_third_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="*" && SecPendingOp=="+"){ //multiply as first op
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = (f_first_num * f_second_num) + f_third_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="*" && SecPendingOp=="-"){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = (f_first_num * f_second_num) - f_third_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="*" && SecPendingOp=="*"){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = (f_first_num * f_second_num) * f_third_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="*" && SecPendingOp=="/"){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = (f_first_num * f_second_num) / f_third_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="/" && SecPendingOp=="+"){ //divide as first op
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = (f_first_num / f_second_num) + f_third_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="/" && SecPendingOp=="-"){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = (f_first_num / f_second_num) - f_third_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="/" && SecPendingOp=="*"){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = (f_first_num / f_second_num) * f_third_num;
+				display(Accum); 
+			}
+			else if(PendingOp=="/" && SecPendingOp=="/"){
+				f_first_num = Number(first_num);
+				f_second_num = Number(second_num);
+				f_third_num = Number(third_num);
+				Accum = (f_first_num / f_second_num) / f_third_num;
+				display(Accum); 
+			}
+		}
+	</script>
+	<a href="http://validator.w3.org/check?uri=referer"><img
+    src="http://www.w3.org/Icons/valid-xhtml11"
+    alt="Valid XHTML 1.1" height="31" width="88" id="xhtml_logo" /></a>
+</body>
+</html>
