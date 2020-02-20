@@ -115,16 +115,12 @@
 	</div>
 
 	<script type="text/javascript">
-	//This is the function I am providing for you.  It takes as argument a string or a number and displays it in the box in the window
-	//There is no need to edit this function in any way.
 		function display(num) 
 		{
 			var node = document.getElementById("display");  
 			node.value=num; 
 		}
 		
-
-	// `Add whatever JS you want here
 		var Accum = 0;
 
 		var FirstNumFlag = false;
@@ -142,8 +138,8 @@
 		var PendingOp="";
 		var SecPendingOp="";
 
-	// You will want to write a function that captures the users button pushes
-	// After each button push your function should call the display function to show the number entered so far.
+	// A function that captures the users button pushes
+	// After each button push, function should call the display function to show the number entered so far
 		function BtnPressed(num) 
 		{ 
 			tnode = document.getElementById("display");
@@ -220,7 +216,7 @@
 			}
 		}
 		
-		// You should also write a function that computes the final result and calls the display function	 
+		// A function that computes the final result and calls the display function	 
 		function Compute(first_num,second_num,third_num,PendingOp,SecPendingOp)
 		{
 			//alert(first_num+PendingOp+second_num);
